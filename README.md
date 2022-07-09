@@ -47,7 +47,7 @@ import (
 
 #### Initialize the package
 
-```
+```go
 
 const LumenApiKey = "<< your-api-key >>";
 
