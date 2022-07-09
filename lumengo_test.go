@@ -6,12 +6,15 @@ import (
 
 var identifier = "383848002224"
 
+var instance *Lumengo
+
 func TestLumengo(t *testing.T) {
+
+	instance = NewLumengo("<< api-key-here >>")
 	t.Log("TestLumengo")
 }
 
 func TestIdentify(t *testing.T) {
-	instance := NewLumengo("Zd3SV9PoCx1d4ui7m8JVvkAasC8ADfczu8")
 
 	params := IdentifyParams{
 		Email:     "test@tes.co",
@@ -31,7 +34,6 @@ func TestIdentify(t *testing.T) {
 }
 
 func TestTrack(t *testing.T) {
-	instance := NewLumengo("Zd3SV9PoCx1d4ui7m8JVvkAasC8ADfczu8")
 
 	params := map[string]interface{}{
 		"productId": 100023449,
