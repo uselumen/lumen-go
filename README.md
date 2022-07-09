@@ -51,7 +51,7 @@ import (
 
 const LumenApiKey = "<< your-api-key >>";
 
-lumen := NewLumengo(LumenApiKey)
+lumen := lumengo.NewLumengo(LumenApiKey)
 
 ```
 
@@ -61,7 +61,7 @@ lumen := NewLumengo(LumenApiKey)
 
 ```go
 
-	data := IdentifyParams{
+	data := lumengo.IdentifyParams{
 		Email:     "john@doe.co", // required
 		FirstName: "Gopher",
 		LastName:  "Basit",
