@@ -1,22 +1,23 @@
-package lumengo
+package lumengo_test
 
 import (
 	"testing"
+
+	lumengo "github.com/uselumen/lumen-go"
 )
+
+var instance *lumengo.Lumengo
 
 var identifier = "383848002224"
 
-var instance *Lumengo
-
 func TestLumengo(t *testing.T) {
-
-	instance = NewLumengo("<< api-key-here >>")
+	instance = lumengo.NewLumengo("<< api-key-here >>")
 	t.Log("TestLumengo")
 }
 
 func TestIdentify(t *testing.T) {
 
-	params := IdentifyParams{
+	params := lumengo.IdentifyParams{
 		Email:     "test@tes.co",
 		FirstName: "Gopher",
 		LastName:  "Go",
