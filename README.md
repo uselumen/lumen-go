@@ -33,14 +33,21 @@ Lumen-go client allows you to seamlessly identify and track user attributes and 
 go get github.com/uselumen/lumen-go
 ```
 
-## Usage
+## Installation
 
-#### Initialize the plugin
+#### Import the package
 
 ```go
 import (
  "github.com/uselumen/lumen-go"
 )
+
+
+```
+
+#### Initialize the package
+
+```
 
 const LumenApiKey = "<< your-api-key >>";
 
@@ -48,16 +55,19 @@ lumen := NewLumengo(LumenApiKey)
 
 ```
 
+## Usage
+
 #### Identify a user
 
 ```go
+
 	data := IdentifyParams{
 		Email:     "john@doe.co", // required
 		FirstName: "Gopher",
 		LastName:  "Basit",
 	}
 
-  err := lumen.Identify("<< user-identifier >>", data)
+    err := lumen.Identify("<< user-identifier >>", data)
 
 	if err != nil {
 		return err
@@ -71,9 +81,8 @@ lumen := NewLumengo(LumenApiKey)
 After identifying users, you can now capture their actions like "Product Clicked" or "Product Viewed" with other custom properties.
 
 ```go
- customTrackProperties = {"value": "1233"};
 
- 	params := map[string]interface{}{
+ 	properties := map[string]interface{}{
 		"productId": 100023449,
 	}
 
@@ -83,8 +92,6 @@ After identifying users, you can now capture their actions like "Product Clicked
 	if err != nil {
 		return err
 	}
-
-
 
 ```
 
