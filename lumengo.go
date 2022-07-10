@@ -15,7 +15,7 @@ import (
 const DefaultUserAgent = "Uselumen.co Go Client/" + Version
 
 const (
-	BaseUrl string = "https://api.uselumen.co"
+	BaseUrl string = "https://lumen-api-staging.up.railway.app/v1"
 )
 
 type (
@@ -26,7 +26,6 @@ type (
 	// Lumengo is the main struct of the Lumengo package.
 	Lumengo struct {
 		apiKey    string
-		Client    *http.Client
 		UserAgent string
 	}
 
@@ -41,8 +40,9 @@ type (
 
 	TrackParams struct {
 		Identifier string                 `json:"identifier"` // compulsory
-		Event      string                 `json:"event"`      // compulsory
+		EventName  string                 `json:"event_name"` // compulsory
 		Properties map[string]interface{} `json:"properties"` // optional
+		Source     string                 `json:"source"`     //     //
 	}
 )
 
@@ -69,7 +69,7 @@ func NewLumengo(apiKey string) *Lumengo {
 }
 
 // Identify with context
-func (l *Lumengo) IdentifyCtx(ctx context.Context, identifier Identifier, params IdentifyParams) error {
+func (l *Lumengo) IdentifyCtx(ctx context.Context, identifier string, params IdentifyParams) error {
 
 	if identifier == "" {
 		return errors.New("Identifier is required")
@@ -79,29 +79,40 @@ func (l *Lumengo) IdentifyCtx(ctx context.Context, identifier Identifier, params
 		return errors.New("Email is required")
 	}
 
-	params.SetIdentifier(identifier)
+	params.SetIdentifier(Identifier(identifier))
 	fmt.Println("params: ", params)
 
 	uri := fmt.Sprintf("%v/customer/identify", BaseUrl)
 	return l.request(context.Background(), "POST", uri, params)
 }
 
-func (l *Lumengo) Identify(identifier Identifier, params IdentifyParams) error {
+func (l *Lumengo) Identify(identifier string, params IdentifyParams) error {
 	return l.IdentifyCtx(context.Background(), identifier, params)
 }
 
-func (l *Lumengo) TrackCtx(ctx context.Context, identifier Identifier, eventName string, params TrackParams) error {
+func (l *Lumengo) TrackCtx(ctx context.Context, identifier string, eventName string, params map[string]interface{}) error {
 
 	if identifier == "" {
 		return errors.New("Identifier is required")
 	}
 
+	if eventName == "" {
+		return errors.New("Event name is required")
+	}
+
+	object := TrackParams{
+		Source:     "go-client",
+		Properties: params,
+		Identifier: identifier,
+		EventName:  eventName,
+	}
+
 	uri := fmt.Sprintf("%v/event/track", BaseUrl)
-	return l.request(ctx, "POST", uri, params)
+	return l.request(ctx, "POST", uri, object)
 
 }
 
-func (l *Lumengo) Track(identifier Identifier, eventName string, params TrackParams) error {
+func (l *Lumengo) Track(identifier string, eventName string, params map[string]interface{}) error {
 	return l.TrackCtx(context.Background(), identifier, eventName, params)
 }
 
@@ -118,36 +129,30 @@ func (l *Lumengo) GetApiKey() string {
 func (l *Lumengo) request(ctx context.Context, method, url string, body interface{}) error {
 	var req *http.Request
 
-	if body != nil {
-		b, err := json.Marshal(body)
-		if err != nil {
-			return err
-		}
-
-		req, err = http.NewRequest(method, url, bytes.NewBuffer(b))
-		if err != nil {
-			return err
-		}
-		req = req.WithContext(ctx)
-
-		req.Header.Add("User-Agent", l.UserAgent)
-		req.Header.Add("Content-Type", "application/json")
-		req.Header.Add("Content-Length", strconv.Itoa(len(b)))
-	} else {
-		var err error
-		req, err = http.NewRequest(method, url, nil)
-		if err != nil {
-			return err
-		}
+	b, err := json.Marshal(body)
+	if err != nil {
+		return err
 	}
 
+	req, err = http.NewRequest(method, url, bytes.NewBuffer(b))
+	if err != nil {
+		return err
+	}
+	req = req.WithContext(ctx)
+
+	req.Header.Add("User-Agent", l.UserAgent)
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Content-Length", strconv.Itoa(len(b)))
 	req.Header.Add("api_key", l.GetApiKey())
 
-	resp, err := l.Client.Do(req)
+	client := &http.Client{}
+
+	resp, err := client.Do(req)
 
 	if err != nil {
 		return err
 	}
+
 	defer resp.Body.Close()
 
 	responseBody, err := ioutil.ReadAll(resp.Body)
