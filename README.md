@@ -7,7 +7,7 @@
 
 # Lumen
 
-Lumen-go client allows you to seamlessly identify and track user attributes and events on your app. Plus other perks.
+Lumen-go client library allows you to seamlessly identify and track user attributes and events on your app. Plus other perks.
 
 ## Features
 
