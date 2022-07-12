@@ -15,7 +15,7 @@ import (
 const DefaultUserAgent = "Uselumen.co Go Client/" + Version
 
 const (
-	BaseUrl string = "https://lumen-api-staging.up.railway.app/v1"
+	BaseUrl string = "https://api.uselumen.co/v1"
 )
 
 type (
