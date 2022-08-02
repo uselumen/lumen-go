@@ -9,7 +9,7 @@ import (
 
 var instance *lumengo.Lumengo
 
-var identifier = "38384832224"
+var identifier = "12203315"
 
 func TestLumengo(t *testing.T) {
 	instance = lumengo.NewLumengo("Zd3SV9PoCx1d4ui7m8JVvkAasC8ADfczu8")
